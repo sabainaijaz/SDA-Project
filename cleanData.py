@@ -28,5 +28,6 @@ def clean_data(data):
         return record
 
     cleaned=list(filter(lambda r:r is not None,map(clean_record,final_records)))
-    return cleaned 
-  
+    cleaned=pd.DataFrame(cleaned) #cpnverting from list->datframe
+    
+    return cleaned
