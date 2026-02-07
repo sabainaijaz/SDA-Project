@@ -31,3 +31,4 @@ def clean_data(data):
     cleaned=pd.DataFrame(cleaned) #cpnverting from list->datframe
     
     return cleaned
+
