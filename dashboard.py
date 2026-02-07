@@ -11,5 +11,8 @@ with open("config.json") as f:
 data=load_data("GDP-Data.csv")
 cleaned=clean_data(data)
 filtered=filter_data(cleaned,config)
+print("Number of rows after filtering:", len(filtered))
+print("Sample rows:", filtered[:5])
+
 computation=compute_data(filtered,config)
 print("Computation results:", computation)
