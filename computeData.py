@@ -5,6 +5,7 @@ def compute_data(filtered_data,config):
     
     #op is the operation we need to perform (sum/avg)
     op = config.get("operation","").lower()
+    
     #handling null case
     gdp_values = list(map(lambda r:r["Value"],filtered_data))
     if op == "average":

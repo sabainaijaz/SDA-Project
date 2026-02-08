@@ -9,8 +9,7 @@ def clean_data(data):
     #turning columns into rows so its easier to filter later on 
     #the GDP under the years goes under the values column accordingly
     year_cols = list(filter(lambda c: c.isdigit(), data.columns))
-
-   
+    records = data.to_dict(orient="records")
 
     #convdrting wide to long format
     data_long = list(
@@ -23,8 +22,7 @@ def clean_data(data):
         },
             filter(
                 lambda r:r[0].get(r[1]) not in ("",None),
-                ((row,year) for row in data.to_dict(orient="records")
-                            for year in filter(str.isdigit, data.columns))
+                ((row,year) for row in records for year in year_cols)
             )
         )
     )

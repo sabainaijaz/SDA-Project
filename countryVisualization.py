@@ -22,6 +22,7 @@ def country_visualization(cleaned_data, config):
 
     line_color="tab:pink"
     hist_color="tab:purple"
+    
     # line chart: 
 
     plt.figure()

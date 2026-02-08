@@ -1,5 +1,6 @@
 def filter_data(cleaned_data, config):
     region = config.get("region", [])
+    
     if isinstance(region, str):
         regions = list(map(lambda r: r.strip().lower(), filter(None, region.split(","))))
     elif isinstance(region, list):
