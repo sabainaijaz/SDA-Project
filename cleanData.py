@@ -8,22 +8,24 @@ def clean_data(data):
     # in the og file every year is a new column
     #turning columns into rows so its easier to filter later on 
     #the GDP under the years goes under the values column accordingly
-    year_cols = [col for col in data.columns if col.isdigit()]
-    data_long = data.melt(
-        id_vars=["Country Name", "Region"],  # columns which willl have no changhe
-        value_vars=year_cols,                 # all cols converting to rows of year 1960-2024 all comes under year
-        var_name="Year",                      #name for the column header
-        value_name="Value"                    # name for the gdp column header
-    )
-  #deleting rows with missing values
-    data_long = data_long.dropna(subset=["Country Name", "Region", "Year", "Value"])
-    
-    data_long["Year"] = data_long["Year"].astype(int)
-    data_long["Value"] = data_long["Value"].astype(float)
-    
-    data_long = data_long[data_long["Value"] >= 0]
+    year_cols = list(filter(lambda c: c.isdigit(), data.columns))
 
-    # converting to list of dict
-    cleaned_records = data_long.to_dict(orient="records")
+    records = data.to_dict(orient="records") 
+
+    #convdrting wide to long format
+    data_long = [
+        {
+            "Country Name": row["Country Name"],
+            "Region": row["Region"],
+            "Year": int(year),
+            "Value": float(row[year])
+        }
+        for row in records
+        for year in year_cols
+        if row.get(year) not in ("", None)
+    ]
     
-    return cleaned_records
+    #removing invalid gdp values 
+    cleaned = list(filter(lambda r: r["Value"] >= 0, data_long))
+    
+    return cleaned

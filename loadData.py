@@ -2,9 +2,7 @@ import pandas as pd
 
 def load_data(file_path): 
     try:
-        data = pd.read_csv(file_path)
-        print(f"Data loaded successfully from {file_path}")
-        return data
+        return pd.read_csv(file_path)
     except FileNotFoundError:
         raise FileNotFoundError(f"File not found: {file_path}")
     except pd.errors.EmptyDataError:
