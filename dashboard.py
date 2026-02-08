@@ -1,4 +1,5 @@
 import json
+import operator
 import pandas as pd
 from loadData import load_data
 from cleanData import clean_data
@@ -19,13 +20,24 @@ try:
     validate_config(config, cleaned)
     filtered = filter_data(cleaned,config)
     result = compute_data(filtered,config)
+    print("\n\t\t\t\t\t\t\t   GDP ANALYSIS")
 
     print("Configuration:")
 
 #need to print the config line by line 
     list(map(lambda kv: print(f"{kv[0]}: {kv[1]}"), config.items()))
+    operation=config.get("operation","Unknown").capitalize()
+    target="Country" if config.get("country") else "Continent"
+    
+    print(f"\nOperation: {operation} of GDP")
+    print(f"Target: {target}")
+    print(f"{operation}:")
 
-    print("\nComputation results:", result)
+    if isinstance(result, dict):
+        list(map(lambda kv: print(f"{kv[0]}: {kv[1]}"), result.items()))
+    else:
+        print(result)
+     
 except FileNotFoundError as e:
     show_error(str(e))
 except ValueError as e:

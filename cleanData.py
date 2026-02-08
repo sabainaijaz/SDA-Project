@@ -10,20 +10,24 @@ def clean_data(data):
     #the GDP under the years goes under the values column accordingly
     year_cols = list(filter(lambda c: c.isdigit(), data.columns))
 
-    records = data.to_dict(orient="records") 
+   
 
     #convdrting wide to long format
-    data_long = [
-        {
-            "Country Name": row["Country Name"],
-            "Region": row["Region"],
-            "Year": int(year),
-            "Value": float(row[year])
-        }
-        for row in records
-        for year in year_cols
-        if row.get(year) not in ("", None)
-    ]
+    data_long = list(
+        map(
+            lambda r:{
+            "Country Name": r[0]["Country Name"],
+            "Region": r[0]["Region"],
+            "Year": int(r[1]),
+            "Value": float(r[0][r[1]])
+        },
+            filter(
+                lambda r:r[0].get(r[1]) not in ("",None),
+                ((row,year) for row in data.to_dict(orient="records")
+                            for year in filter(str.isdigit, data.columns))
+            )
+        )
+    )
     
     #removing invalid gdp values 
     cleaned = list(filter(lambda r: r["Value"] >= 0, data_long))
