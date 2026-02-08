@@ -9,11 +9,14 @@ from validateConfig import validate_config
 with open("config.json") as f:
     config=json.load(f)
 
-validate_config(config)
-
 data = load_data("GDP-Data.csv")
+
 cleaned = clean_data(data)
+
+validate_config(config, cleaned)
+
 filtered = filter_data(cleaned,config)
+
 #print("Number of rows after filtering:", len(filtered))
 #print("Sample rows:", filtered[:5])
 
