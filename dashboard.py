@@ -6,6 +6,7 @@ from filterData import filter_data
 from computeData import compute_data
 from validateConfig import validate_config
 from countryVisualization import country_visualization
+from regionVisualization import region_visualization
 
 with open("config.json") as f:
     config=json.load(f)
@@ -27,3 +28,5 @@ print("\nComputation results:", result)
 if config.get("country"):
     country_visualization(cleaned, config)
 
+if not config.get("country"):
+    region_visualization(filtered, limit=5)

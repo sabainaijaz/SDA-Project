@@ -20,10 +20,12 @@ def country_visualization(cleaned_data, config):
     years = list(map(lambda r: r["Year"], country_data))
     values = list(map(lambda r: r["Value"], country_data))
 
+    line_color="tab:pink"
+    hist_color="tab:purple"
     # line chart: 
 
     plt.figure()
-    plt.plot(years, values)
+    plt.plot(years, values,color=line_color,marker='o')
     plt.title(f"GDP of {country.title()} over the years")
     plt.xlabel("Year")
     plt.ylabel("GDP")
@@ -33,7 +35,7 @@ def country_visualization(cleaned_data, config):
     # histogram:
 
     plt.figure()
-    plt.hist(values, bins=20)
+    plt.hist(values, bins=20,color=hist_color,edgecolor="black")
     plt.title(f"GDP Distribution of {country.title()}")
     plt.xlabel("GDP")
     plt.ylabel("Frequency")
