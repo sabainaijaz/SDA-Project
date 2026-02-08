@@ -12,16 +12,14 @@ with open("config.json") as f:
 data = load_data("GDP-Data.csv")
 
 cleaned = clean_data(data)
-
 validate_config(config, cleaned)
-
 filtered = filter_data(cleaned,config)
-
-#print("Number of rows after filtering:", len(filtered))
-#print("Sample rows:", filtered[:5])
-
 result = compute_data(filtered,config)
 
 print("Configuration:")
-print("\n", config)
+
+#need to print the config line by line 
+list(map(lambda kv: print(f"{kv[0]}: {kv[1]}"), config.items()))
+
 print("\nComputation results:", result)
+
