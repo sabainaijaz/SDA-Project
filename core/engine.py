@@ -29,7 +29,7 @@ class TranformationEngine:
                 "Country Name": r[0]["Country Name"],
                 "Region": r[0]["Region"],
                 "Year": int(r[1]),
-                "Value": float(r[0][r[1]])
+                "GDP": float(r[0][r[1]])
             },
                 filter(
                     lambda r:r[0].get(r[1]) not in ("",None),
