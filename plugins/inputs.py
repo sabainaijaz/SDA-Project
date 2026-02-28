@@ -5,11 +5,12 @@ from core.contracts import PipelineService
 
 class CsvReader:
     def __init__(self, pipeline: PipelineService):
-        self.pipleline = pipeline
+        self.pipeline = pipeline
 
     def read(self, file_path: str) -> None:
         try:
-            return pd.read_csv(file_path)
+            data = pd.read_csv(file_path)
+            self.pipleline.execute(data.to_dict(orient="records"))
         except FileNotFoundError:
             raise FileNotFoundError(f"File not found: {file_path}")
         except pd.errors.EmptyDataError:
