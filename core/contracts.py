@@ -14,3 +14,4 @@ class PipelineService(Protocol):
     Inbound Abstraction: The Input Module calls this to send data to the Core.
     """
     def execute(self, raw_data: List[Any]) -> None:
+        ...
