@@ -1,10 +1,10 @@
 {
-  "continent": "Africa",
-  "country": "Nigeria",
-  "analysis": [],
-  "year_range": [2010, 2020],
-  "input": "csv",
-  "input_file": "data/GDP-Data.csv",
-  "output": "console",
-  "chart_type": "line"
+    "continent": "",
+    "country": "",
+    "analysis": [ "contribution" ],
+    "year_range": [ 2010, 2020 ],
+    "input": "json",
+    "input_file": "data\\gdp_with_continent_filled.json",
+    "output": "console",
+    "chart_type": "pie"
 }
