@@ -1,7 +1,9 @@
 {
-  "region": "Europe",
-  "country": "",
-  "year": 2020,
-  "operation": "average",
-  "output": "dashboard"
+  "continent": "Africa",
+  "country": "Nigeria",
+  "analysis": [],
+  "year_range": [2010, 2020],
+  "input": "csv",
+  "output": "console",
+  "chart_type": "line"
 }

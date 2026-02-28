@@ -1,8 +1,21 @@
 import json
 import re
+import pandas as pd
 from core.contracts import PipelineService
 
-# class CsvReader:
+class CsvReader:
+    def __init__(self, pipeline: PipelineService):
+        self.pipleline = pipeline
+
+    def read(self, file_path: str) -> None:
+        try:
+            return pd.read_csv(file_path)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File not found: {file_path}")
+        except pd.errors.EmptyDataError:
+            raise ValueError(f"No data: {file_path} is empty.")
+        except Exception as e:
+            raise Exception(f"An error occurred while loading data: {e}")
 
 
 class JSONReader:
