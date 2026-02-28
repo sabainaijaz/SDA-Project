@@ -10,7 +10,7 @@ class CsvReader:
     def read(self, file_path: str) -> None:
         try:
             data = pd.read_csv(file_path)
-            self.pipleline.execute(data.to_dict(orient="records"))
+            self.pipeline.execute(data.to_dict(orient="records"))
         except FileNotFoundError:
             raise FileNotFoundError(f"File not found: {file_path}")
         except pd.errors.EmptyDataError:

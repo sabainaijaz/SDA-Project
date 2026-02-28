@@ -3,7 +3,8 @@
   "country": "Nigeria",
   "analysis": [],
   "year_range": [2010, 2020],
-  "input": "data/GDP-Data.csv",
+  "input": "csv",
+  "input_file": "data/GDP-Data.csv",
   "output": "console",
   "chart_type": "line"
 }

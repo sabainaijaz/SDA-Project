@@ -2,16 +2,18 @@ from typing import List, Any
 from core.contracts import DataSink
 
 class TranformationEngine:
-    def __init__(self, sink: DataSink):
+    def __init__(self, sink: DataSink, config: dict):
         self.sink = sink
+        self.config = config
 
-    def execute(self, raw_data: List[Any],config: dict) -> None:
+    def execute(self, raw_data: List[Any]) -> None:
         # 1. Transform data
         cleaned = self.clean_data(raw_data)
-        filtered = self.filter_data(cleaned,config)
-        result = self.compute_data(filtered,config)
+        filtered = self.filter_data(cleaned, self.config)
+        result = self.compute_data(filtered, self.config)
+
         # 2. Send to the abstraction
-        self.sink.write(raw_data)
+        self.sink.write(result)
 
 
     def clean_data(self, data):
@@ -69,6 +71,7 @@ class TranformationEngine:
             (not country or r["Country Name"].lower() == country) and
             (not start_year or not end_year or start_year <= r["Year"] <= end_year)
             , cleaned_data))
+    
     def compute_data(self, filtered_data, config):
 
         results = {}

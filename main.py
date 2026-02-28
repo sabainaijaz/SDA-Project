@@ -1,5 +1,5 @@
 import json
-from core.engine import TransformationEngine
+from core.engine import TranformationEngine
 from plugins.inputs import CsvReader, JSONReader
 from plugins.outputs import ConsoleWriter, GraphicsChartWriter
 
@@ -22,7 +22,7 @@ def bootstrap():
         sink = OUTPUT_DRIVERS[output_type]()
 
     # 3. Instantiate Core (inject the Sink)
-    engine = TransformationEngine(sink)
+    engine = TranformationEngine(sink, config)
 
     # 4. Instantiate Input (inject the Core)
     input_type = config["input"]
