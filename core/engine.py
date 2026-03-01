@@ -65,21 +65,26 @@ class TranformationEngine:
             , cleaned_data))
     
     def compute_data(self, filtered_data, config):
-        from collections import defaultdict
         from functools import reduce
 
         year_range = config.get("year_range", [])
         startYear, endYear = year_range if len(year_range) == 2 else (None, None)
+        if startYear and endYear and startYear > endYear:
+            raise ValueError(f"Invalid year range: start year {startYear} cannot be greater than end year {endYear}.")
         decline_years = config.get("decline_years", 5)
 
         # 1. Top 10 GDP
         def compute_top10():
+            if endYear is None:
+                return []
             year_data = list(filter(lambda r: r["Year"] == endYear, filtered_data))
             return list(map(lambda r: {"Country Name": r["Country Name"], "GDP": r["GDP"]},
                     sorted(year_data, key=lambda x: x["GDP"], reverse=True)[:10]))
 
         # 2. Bottom 10 GDP
         def compute_bottom10():
+            if endYear is None:
+                return []
             year_data = list(filter(lambda r: r["Year"] == endYear, filtered_data))
             return list(map(lambda r: {"Country Name": r["Country Name"], "GDP": r["GDP"]},
                     sorted(year_data, key=lambda x: x["GDP"])[:10]))

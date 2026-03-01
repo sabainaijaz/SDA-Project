@@ -1,32 +1,34 @@
-from typing import List
 import matplotlib.pyplot as plt
 
 class ConsoleWriter:
-    def write(self, records: dict) -> None:
-        for analysis, data in records.items():
-            print(f"\n=== {analysis.upper()} ===")
-            if isinstance(data, list):
-                for record in data:
-                    print(f"  {record}")
-            else:
-                print(f"  {data}")
+    def write(self, records):
+        list(map(self._dispatch, records.items()))
+
+    def _dispatch(self, item):
+        analysis, data = item
+        print(analysis)
+        print(data)
 
 class GraphicsChartWriter:
     def __init__(self, chart_type: str):
         self.chart_type = chart_type
 
     def write(self, records: dict) -> None:
-        for analysis, data in records.items():
-            if self.chart_type == "line":
-                self._write_line_chart(analysis, data)
-            elif self.chart_type == "bar":
-                self._write_bar_chart(analysis, data)
-            elif self.chart_type == "scatter":
-                self._write_scatter_chart(analysis, data)
-            elif self.chart_type == "pie":
-                self._write_pie_chart(analysis, data)
-            else:
-                print(f"Unsupported chart type: {self.chart_type}")
+        list(map(self._dispatch, records.items()))
+
+    def _dispatch(self, item):
+        analysis, data = item
+
+        if self.chart_type == "line":
+            self._write_line_chart(analysis, data)
+        elif self.chart_type == "bar":
+            self._write_bar_chart(analysis, data)
+        elif self.chart_type == "scatter":
+            self._write_scatter_chart(analysis, data)
+        elif self.chart_type == "pie":
+            self._write_pie_chart(analysis, data)
+        else:
+            print(f"Unsupported chart type: {self.chart_type}")
 
     def _write_line_chart(self, analysis: str, data: list) -> None:
         if analysis == "trend":
@@ -37,18 +39,6 @@ class GraphicsChartWriter:
             plt.title("Global GDP Trend")
             plt.xlabel("Year")
             plt.ylabel("Total GDP")
-            plt.tight_layout()
-            plt.show()
-
-        elif analysis == "growth":
-            x = list(map(lambda r: r["Country Name"], data))
-            y = list(map(lambda r: r["Growth Rate %"], data))
-            plt.figure()
-            plt.plot(x, y, marker='o')
-            plt.title("GDP Growth Rate by Country")
-            plt.xlabel("Country")
-            plt.ylabel("Growth Rate %")
-            plt.xticks(rotation=45, ha='right')
             plt.tight_layout()
             plt.show()
 
@@ -80,14 +70,19 @@ class GraphicsChartWriter:
             plt.show()
 
         elif analysis == "growth":
-            x = list(map(lambda r: r["Country Name"], data))
-            y = list(map(lambda r: r["Growth Rate %"], data))
-            plt.figure()
-            plt.bar(x, y)
-            plt.title("GDP Growth Rate by Country")
-            plt.xlabel("Country")
-            plt.ylabel("Growth Rate %")
-            plt.xticks(rotation=45, ha='right')
+            data_sorted = sorted(data, key=lambda r: r["Growth Rate %"], reverse=True)
+
+            top = 15
+            data_limit = data_sorted[:top]
+            
+            countries = list(map(lambda r: r["Country Name"], data_limit))
+            growth = list(map(lambda r: r["Growth Rate %"], data_limit))
+
+            plt.figure(figsize=(10, 6))
+            plt.barh(countries, growth)
+            plt.title(f"Top {top} GDP Growth Rate by Country")
+            plt.xlabel("Growth Rate %")
+            plt.ylabel("Country")
             plt.tight_layout()
             plt.show()
 

@@ -1,10 +1,10 @@
 {
     "continent": "",
     "country": "",
-    "analysis": [ "contribution" ],
+    "analysis": [ "contribution"],
     "year_range": [ 2010, 2020 ],
-    "input": "json",
-    "input_file": "data\\gdp_with_continent_filled.json",
+    "input": "csv",
+    "input_file": "data\\GDP-Data.csv",
     "output": "console",
-    "chart_type": "pie"
+    "chart_type": "bar"
 }

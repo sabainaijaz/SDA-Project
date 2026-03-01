@@ -13,6 +13,8 @@ def bootstrap():
         config = json.load(f)
 
     # 2. Instantiate Output (the Sink)
+    if config["output"] not in OUTPUT_DRIVERS:
+        raise ValueError(f"Unsupported output type: {config['output']}")
     output_type = config["output"]
     
     if output_type == "graphics":
@@ -25,6 +27,8 @@ def bootstrap():
     engine = TranformationEngine(sink, config)
 
     # 4. Instantiate Input (inject the Core)
+    if config["input"] not in INPUT_DRIVERS:
+        raise ValueError(f"Unsupported input type: {config['input']}")
     input_type = config["input"]
     input_driver = INPUT_DRIVERS[input_type](engine)
 
