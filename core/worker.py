@@ -1,5 +1,6 @@
+from inspect import signature
 from multiprocessing import Queue
-from core.functional import filter_verified
+from core.functional import verify_signature, filter_verified
 
 class Worker:
     def __init__(self, input_queue: Queue, output_queue: Queue, secret_key: str, iterations: int):
@@ -10,7 +11,10 @@ class Worker:
 
     def run(self):
         while True:  
-            packet = self.input_queue.get()  
-            verified = filter_verified([packet], self.secret_key, self.iterations)
-            if verified:
-                self.output_queue.put(verified[0])
+            packet = self.input_queue.get()  #get oen packet
+            value=packet.get("metric_value")
+            signature=packet.get("security_hash")
+            if value is None or signature is None:
+                continue #skipping invalid packets
+            if verify_signature(value, signature, self.secret_key, self.iterations):
+                self.output_queue.put(packet)
