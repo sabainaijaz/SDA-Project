@@ -1,5 +1,7 @@
 import hashlib
 from typing import List, Dict, Any
+#all pure functions
+#take sinput retuns output
 #is data trsted , verifying
 def verify_signature(value: float, signature: str, secret_key: str, iterations: int = 100000) -> bool:
     value_str = str(round(value, 2)) if value is not None else "0"

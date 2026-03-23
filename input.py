@@ -59,7 +59,7 @@ class Input:
         try:
             df = pd.read_csv(self.file_path)
 
-            # Convert all rows functionally
+            # Convert all rows
             mapped_rows = list(
                 map(
                     lambda r: self.convertRow(r[1].to_dict()),
@@ -67,7 +67,7 @@ class Input:
                 )
             )
 
-            # Push rows to queue with delay (simulate stream)
+            #sends row to worker and pauses for a while so that all rows dont reach at the same time
             list(
                 map(
                     lambda row: (self.queue.put(row), time.sleep(self.delay)),

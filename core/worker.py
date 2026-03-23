@@ -10,11 +10,15 @@ class Worker:
         self.iterations = iterations
 
     def run(self):
-        while True:  
-            packet = self.input_queue.get()  #get oen packet
-            value=packet.get("metric_value")
-            signature=packet.get("security_hash")
-            if value is None or signature is None:
-                continue #skipping invalid packets
-            if verify_signature(value, signature, self.secret_key, self.iterations):
-                self.output_queue.put(packet)
+        while True:
+            try: 
+                packet = self.input_queue.get()  # get one packet
+                packet = self.input_queue.get()  #get oen packet
+                value=packet.get("metric_value")
+                signature=packet.get("security_hash")
+                if value is None or signature is None:
+                    continue #skipping invalid packets
+                if verify_signature(value, signature, self.secret_key, self.iterations):
+                    self.output_queue.put(packet)
+            except Exception as e:
+                print(f"Worker module error: {e}") 
