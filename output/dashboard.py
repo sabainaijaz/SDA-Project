@@ -1,43 +1,29 @@
 import matplotlib.pyplot as plt
 
-def output_dashboard(processed_queue, config):
+def output_dashboard(queue, config):
     plt.ion()
 
-    x = []
-    y = []
-    avg = []
+    charts = config["visualizations"]["data_charts"]
 
-    x_key = "time"
-    y_key = "value"
-
-    show_raw = config["display"].get("show_raw", True)
-    show_processed = config["display"].get("show_processed", True)
+    x_vals = []
+    y_vals = []
+    avg_vals = []
 
     while True:
-        packet = processed_queue.get()
+        packet = queue.get()
 
-        if packet is None:
-            break
-
-        x.append(packet[x_key])
-        y.append(packet[y_key])
-        avg.append(packet.get("computed_metric", 0))
+        x_vals.append(packet[charts[0]["x_axis"]])
+        y_vals.append(packet[charts[0]["y_axis"]])
+        avg_vals.append(packet.get("computed_metric"))
 
         plt.clf()
 
-        plt_index = 1
+        plt.subplot(2, 1, 1)
+        plt.plot(x_vals, y_vals)
+        plt.title("Live Values")
 
-        if show_raw:
-            plt.subplot(2, 1, plt_index) 
-            plt.plot(x,y)
-            plt.title("Live values")
-            plt_index += 1
-
-        if show_processed:
-            plt.subplot(2, 1, plt_index) 
-            plt.plot(x,avg)
-            plt.title("Running average")
+        plt.subplot(2, 1, 2)
+        plt.plot(x_vals, avg_vals)
+        plt.title("Running Average")
 
         plt.pause(0.01)
-
-

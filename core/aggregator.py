@@ -1,38 +1,27 @@
-from multiprocessing import Queue
 from core.functional import running_average
 
 class Aggregator:
-    def __init__(self, input_queue: Queue, output_queue: Queue, window_size: int):
-        self.input_queue = input_queue
-        self.output_queue = output_queue
-        self.window_size = window_size
-        self.vals = []  # stores metric vals
+    def __init__(self, in_q, out_q, window):
+        self.in_q = in_q
+        self.out_q = out_q
+        self.window = window
+        self.values = []
 
     def run(self):
-        while True:  
-            try:
+        while True:
+            packet = self.in_q.get()
 
-                packet = self.input_queue.get()  # blocking
-                #recieves data from workwr and then stores it
-                val = packet.get("metric_val")
-                time = packet.get("time_period")
+            value = packet["metric_value"]
+            time = packet["time_period"]
 
-                if val is None:
-                    continue
+            self.values.append(value)
 
-                # store vals in mem
-                self.vals.append(val)
+            averages = running_average(self.values, self.window)
 
-                # fucntinal ccall
-                avg_vals = running_average(self.vals, self.window_size)
+            out = {
+                "time_period": time,
+                "metric_value": value,
+                "computed_metric": averages[-1]
+            }
 
-                # sned the packet to output
-                outPacket = {
-                    "time_period": time,
-                     "metric_val": val,
-                    "computed_metric": avg_vals[-1]  # latest  avdg
-                }
-
-                self.output_queue.put(outPacket)
-            except Exception as e:
-                print(f"Aggregator module error: {e}")  
+            self.out_q.put(out)

@@ -1,6 +1,6 @@
 import time
 
-class monitor:
+class Monitor:
     def __init__(self, telemetry):
         self.telemetry = telemetry
         self.observers = []

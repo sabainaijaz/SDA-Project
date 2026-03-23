@@ -1,81 +1,41 @@
 import pandas as pd
 import time
-import hashlib
-from crypto import generate_signature
+
 
 class Input:
-    def __init__(self, config: dict, output_queue):
-        self.config = config
+    def __init__(self, config, output_queue):
         self.queue = output_queue
+        self.config = config
 
-        # extracting values from config
-        self.file_path = config["file"]
-        self.schema = config["columns"]
-        self.delay = config["speed"]["input_delay"]
-        self.secret_key = config["security"]["secret_key"]
-        self.iterations = config["security"]["iterations"]
+        self.file_path = config["dataset_path"]
+        self.schema = config["schema_mapping"]["columns"]
+        self.delay = config["pipeline_dynamics"]["input_delay_seconds"]
 
-    # returns the correct data type
-    def datatype(self, value, data_type):
+    def cast(self, value, dtype):
         try:
-            if data_type == "string":
+            if dtype == "string":
                 return str(value)
-            elif data_type == "integer":
+            elif dtype == "integer":
                 return int(value)
-            elif data_type == "float":
+            elif dtype == "float":
                 return float(value)
-            else:
-                return value
         except:
-            return None   
+            return None
 
-    # Converts one row to dictionary and calculates hash
-    def convertRow(self, row: dict) -> dict:
-        mapped = dict(
-            map(
-                lambda col: (
-                    col["to"],
-                    self.datatype(row.get(col["from"]), col["type"])
-                ),
-                self.schema
+    def map_row(self, row):
+        packet = {}
+        for col in self.schema:
+            packet[col["internal_mapping"]] = self.cast(
+                row[col["source_name"]],
+                col["data_type"]
             )
-        )
 
-        # SAFE VALUE EXTRACTION + ROUNDING
-        value = mapped.get("metric_value")
-        value_str = str(round(value, 2)) if value is not None else "0"
+        return packet
 
-        # CORRECT HASHING (password = key, salt = value)
-        mapped["security_hash"] = generate_signature(
-        value_str,
-        self.secret_key,
-        self.iterations
-)
-
-        return mapped
-
-    # Imperative shell: reads CSV and pushes rows into queue
     def run(self):
-        try:
-            df = pd.read_csv(self.file_path)
+        df = pd.read_csv(self.file_path)
 
-            # Convert all rows
-            mapped_rows = list(
-                map(
-                    lambda r: self.convertRow(r[1].to_dict()),
-                    df.iterrows()
-                )
-            )
-
-            #sends row to worker and pauses for a while so that all rows dont reach at the same time
-            list(
-                map(
-                    lambda row: (self.queue.put(row), time.sleep(self.delay)),
-                    mapped_rows
-                )
-            )
-
-        except FileNotFoundError:
-            print(f"File not found: {self.file_path}")
-        except Exception as e:
-            print(f"Error in input module: {e}")
+        for _, row in df.iterrows():
+            packet = self.map_row(row)
+            self.queue.put(packet)
+            time.sleep(self.delay)
