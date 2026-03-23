@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+/core/functional.py
+/data/sample_sensor_data.csv
