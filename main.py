@@ -1,13 +1,13 @@
 from multiprocessing import Process, Queue
 import json
 
-from inputs import Input
+from input import Input
 from core.worker import Worker
 from core.aggregator import Aggregator
-from outputs.dashboard import output_dashboard
-from outputs.telemetry_view import Telemetry
-from telemetry.monitor import Monitor, run_monitor
-from telemetry.telemetry import PipelineTelemetry
+from output.dashboard import output_dashboard
+from output.telemetry_view import Telemetry
+from monitor import Monitor, run_monitor
+from telemetry import PipelineTelemetry
 
 def main():
     with open("config.json") as f:
