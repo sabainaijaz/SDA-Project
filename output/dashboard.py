@@ -7,8 +7,11 @@ def output_dashboard(processed_queue, config):
     y = []
     avg = []
 
-    x_key = config["visualizations"]["data_charts"][0]["x_axis"]
-    y_key = config["visualizations"]["data_charts"][0]["y_axis"]
+    x_key = "time"
+    y_key = "value"
+
+    show_raw = config["display"].get("show_raw", True)
+    show_processed = config["display"].get("show_processed", True)
 
     while True:
         packet = processed_queue.get()
@@ -22,13 +25,18 @@ def output_dashboard(processed_queue, config):
 
         plt.clf()
 
-        plt.subplot(2, 1, 1) 
-        plt.plot(x,y)
-        plt.title("Live values")
+        plt_index = 1
 
-        plt.subplot(2, 1, 2) 
-        plt.plot(x,avg)
-        plt.title("Running averagfe")
+        if show_raw:
+            plt.subplot(2, 1, plt_index) 
+            plt.plot(x,y)
+            plt.title("Live values")
+            plt_index += 1
+
+        if show_processed:
+            plt.subplot(2, 1, plt_index) 
+            plt.plot(x,avg)
+            plt.title("Running average")
 
         plt.pause(0.01)
 

@@ -8,7 +8,7 @@ def get_color(ratio):
     else:
         return "red"
 
-class Telemetry:
+class TelemetryView:
     def __init__(self, max_size):
         self.max_size = max_size
         plt.ion()
