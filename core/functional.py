@@ -16,7 +16,7 @@ def verify_signature(packet, key, iterations):
     value_str = str(round(value, 2)) if value is not None else "0"
     computed = generate_signature(value_str, key, iterations)
 
-    return True
+    return computed == signature
 
 
 def running_average(values, window):

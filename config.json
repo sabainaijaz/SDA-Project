@@ -36,8 +36,8 @@
     "stateless_tasks": {
       "operation": "verify_signature",
       "algorithm": "pbkdf2_hmac",
-      "iterations": 1000,
-      "secret_key": "my_secret_key"
+      "iterations": 100000,
+      "secret_key": "sda_spring_2026_secure_key"
     },
     "stateful_tasks": {
       "operation": "running_average",

@@ -5,6 +5,9 @@ from input import Input
 from core.worker import Worker
 from core.aggregator import Aggregator
 from output.dashboard import output_dashboard
+from monitor import Monitor, run_monitor
+from output.telemtry_view import TelemetryView
+from core.telemetry import PipelineTelemetry
 
 def main():
     with open("config.json") as f:
@@ -15,6 +18,13 @@ def main():
     raw_q = Queue(maxsize=qsize)
     proc_q = Queue(maxsize=qsize)
     final_q = Queue(maxsize=qsize)
+
+    telemetry = PipelineTelemetry(raw_q, proc_q)
+    telemtry_view = TelemetryView(qsize)
+    monitor = Monitor(telemetry)
+    monitor.subscribe(telemtry_view)
+
+    telemetry_p = Process(target=run_monitor, args=(monitor,), daemon=True)
 
     input_p = Process(target=Input(config, raw_q).run)
 
@@ -36,7 +46,7 @@ def main():
 
     dash_p = Process(target=output_dashboard, args=(final_q, config), daemon=True)
 
-    processes = [input_p] + workers + [agg_p, dash_p]
+    processes = [input_p] + workers + [agg_p, dash_p, telemetry_p]
 
     for p in processes:
         p.start()

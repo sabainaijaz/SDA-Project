@@ -12,7 +12,4 @@ class Worker:
             packet = self.in_q.get()
 
             if verify_signature(packet, self.key, self.iterations):
-                print("✅ VALID packet")
                 self.out_q.put(packet)
-            else:
-                print("❌ INVALID packet dropped")
