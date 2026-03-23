@@ -1,0 +1,74 @@
+@startuml classDiagram
+' Classes from core
+class Aggregator {
+    - in_q
+    - out_q
+    - window
+    - values
+    + run()
+}
+
+class Worker {
+    - in_q
+    - out_q
+    - key
+    - iterations
+    + run()
+}
+
+class PipelineTelemetry {
+    - raw_queue
+    - processed_queue
+    + get_status()
+}
+
+class Monitor {
+    - telemetry
+    - observers
+    + subscribe(observer)
+    + notify()
+}
+
+class Input {
+    - queue
+    - config
+    - file_path
+    - schema
+    - delay
+    + cast(value, dtype)
+    + map_row(row)
+    + run()
+}
+
+class TelemetryView {
+    - max_size
+    + update(data)
+}
+
+' Functions (non-class) as separate modules
+class Functional {
+    + generate_signature(value_str, key, iterations)
+    + verify_signature(packet, key, iterations)
+    + running_average(values, window)
+}
+
+class Crypto {
+    + generate_signature(raw_value_str, key, iterations)
+}
+
+class Dashboard {
+    + output_dashboard(queue, config)
+}
+
+' Relationships
+Aggregator --> Functional : uses
+Worker --> Functional : uses
+Monitor --> PipelineTelemetry : uses
+Monitor --> TelemetryView : notifies
+Input --> "Queue" : sends data
+Aggregator --> "Queue" : sends processed data
+Worker --> "Queue" : sends verified data
+Dashboard --> "Queue" : reads data
+PipelineTelemetry --> "Queue" : monitors sizes
+
+@enduml

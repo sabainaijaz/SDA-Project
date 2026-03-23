@@ -1,0 +1,28 @@
+@startuml sequenceDiagram
+actor User
+participant main
+participant Input
+participant Worker
+participant Aggregator
+participant PipelineTelemetry
+participant TelemetryView
+participant Monitor
+participant Dashboard
+
+User -> main: starts program
+main -> Input: run()
+Input -> raw_q: put(packet)
+main -> Worker: run() [multiple processes]
+Worker -> raw_q: get(packet)
+Worker -> Functional: verify_signature(packet)
+Worker -> proc_q: put(packet)
+main -> Aggregator: run()
+Aggregator -> proc_q: get(packet)
+Aggregator -> Functional: running_average(values)
+Aggregator -> final_q: put(packet)
+main -> Monitor: run_monitor()
+Monitor -> PipelineTelemetry: get_status()
+Monitor -> TelemetryView: update(data)
+main -> Dashboard: output_dashboard(final_q)
+
+@enduml

@@ -54,28 +54,71 @@ Example configuration structure:
 
 ```json
 {
-    "file": "data/sample_sensor_data.csv",
+  "dataset_path": "data/sample_sensor_data.csv",
+
+  "pipeline_dynamics": {
+    "input_delay_seconds": 0.01,
+    "core_parallelism": 4,
+    "stream_queue_max_size": 50
+  },
+
+  "schema_mapping": {
     "columns": [
-        {"from": "Timestamp", "to": "time", "type": "integer"},
-        {"from": "Raw_Value", "to": "value", "type": "float"},
-        {"from": "Sensor_ID", "to": "entity", "type": "string"}
-    ],
-    "speed": {
-        "input_delay": 0.01,
-        "workers": 4,
-        "queue_size": 50
+      {
+        "source_name": "Sensor_ID",
+        "internal_mapping": "entity_name",
+        "data_type": "string"
+      },
+      {
+        "source_name": "Timestamp",
+        "internal_mapping": "time_period",
+        "data_type": "integer"
+      },
+      {
+        "source_name": "Raw_Value",
+        "internal_mapping": "metric_value",
+        "data_type": "float"
+      },
+      {
+        "source_name": "Auth_Signature",
+        "internal_mapping": "security_hash",
+        "data_type": "string"
+      }
+    ]
+  },
+
+  "processing": {
+    "stateless_tasks": {
+      "operation": "verify_signature",
+      "algorithm": "pbkdf2_hmac",
+      "iterations": 100000,
+      "secret_key": "sda_spring_2026_secure_key"
     },
-    "security": {
-        "key": "my_secret_key",
-        "iterations": 100000
-    },
-    "processing": {
-        "window_size": 10
-    },
-    "display": {
-        "show_raw": true,
-        "show_processed": true
+    "stateful_tasks": {
+      "operation": "running_average",
+      "running_average_window_size": 10
     }
+  },
+
+  "visualizations": {
+    "telemetry": {
+      "show_raw_stream": true,
+      "show_intermediate_stream": true,
+      "show_processed_stream": true
+    },
+    "data_charts": [
+      {
+        "type": "real_time_line_graph_values",
+        "x_axis": "time_period",
+        "y_axis": "metric_value"
+      },
+      {
+        "type": "real_time_line_graph_average",
+        "x_axis": "time_period",
+        "y_axis": "computed_metric"
+      }
+    ]
+  }
 }
 ```
 
