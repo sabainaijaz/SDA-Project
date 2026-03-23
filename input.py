@@ -1,6 +1,7 @@
 import pandas as pd
 import time
 import hashlib
+from crypto import generate_signature
 
 class Input:
     def __init__(self, config: dict, output_queue):
@@ -45,12 +46,11 @@ class Input:
         value_str = str(round(value, 2)) if value is not None else "0"
 
         # CORRECT HASHING (password = key, salt = value)
-        mapped["security_hash"] = hashlib.pbkdf2_hmac(
-            'sha256',
-            self.secret_key.encode('utf-8'),   # password
-            value_str.encode('utf-8'),         # salt
-            self.iterations
-        ).hex()
+        mapped["security_hash"] = generate_signature(
+        value_str,
+        self.secret_key,
+        self.iterations
+)
 
         return mapped
 

@@ -18,18 +18,4 @@ def generate_signature(raw_value_str: str, key: str, iterations: int) -> str:
     )
     return hash_bytes.hex()
 
-def verify_signature(packet: dict, config: dict) -> bool:
-    try:
-        raw_value = round(packet["metric_value"], 2)
-        raw_value_str = f"{raw_value:.2f}"
 
-        stateless = config["processing"]["stateless_tasks"]
-        key = stateless["secret_key"]
-        iterations = stateless["iterations"]
-
-        expected_signature = generate_signature(raw_value_str, key, iterations)
-
-        return expected_signature == packet['signature']
-    
-    except Exception:
-        return False

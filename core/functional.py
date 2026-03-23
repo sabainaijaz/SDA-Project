@@ -1,17 +1,13 @@
 import hashlib
 from typing import List, Dict, Any
+from crypto import generate_signature
 #all pure functions
 #take sinput retuns output
 #is data trsted , verifying
 def verify_signature(value: float, signature: str, secret_key: str, iterations: int = 100000) -> bool:
     value_str = str(round(value, 2)) if value is not None else "0"
     #rounding val to 2 decimal places
-    computed = hashlib.pbkdf2_hmac(#taking hash agaon
-        'sha256',
-        secret_key.encode('utf-8'),   # pass
-        value_str.encode('utf-8'),    # salt
-        iterations
-    )
+    computed = generate_signature(value_str, secret_key, iterations)
     return computed.hex() == signature #cmp hash values
 
 
