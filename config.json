@@ -1,10 +1,47 @@
 {
-    "continent": "",
-    "country": "",
-    "analysis": [ "contribution"],
-    "year_range": [ 2010, 2020 ],
-    "input": "csv",
-    "input_file": "data\\GDP-Data.csv",
-    "output": "console",
-    "chart_type": "bar"
+    "file": "data/unseen_data.csv",
+
+    "speed": {
+        "input_delay": 0.01,
+        "workers": 4,
+        "queue_size": 50
+    },
+
+    "columns": [
+        {
+            "from": "Sensor_ID",
+            "to": "entity",
+            "type": "string"
+        },
+        {
+            "from": "Timestamp",
+            "to": "time",
+            "type": "integer"
+        },
+        {
+            "from": "Raw_Value",
+            "to": "value",
+            "type": "float"
+        },
+        {
+            "from": "Auth_Signature",
+            "to": "signature",
+            "type": "string"
+        }
+    ],
+
+    "security": {
+        "method": "pbkdf2",
+        "iterations": 100000,
+        "key": "my_secret_key"
+    },
+
+    "processing": {
+        "window_size": 10
+    },
+
+    "display": {
+        "show_raw": true,
+        "show_processed": true
+    }
 }
